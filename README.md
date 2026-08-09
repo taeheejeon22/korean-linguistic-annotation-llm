@@ -21,19 +21,18 @@
 
 ## 실행 환경 (참고용)
 
-다른 환경(다른 CUDA/Python 버전 등)에서는 `torch`/`bitsandbytes` 설치 방법이 달라질 수 있습니다.
+다른 환경(다른 OS/CUDA/Python 버전 등)에서는 `torch`/`bitsandbytes` 설치 방법이 달라질 수 있습니다.
 
 | 항목 | 권장/검증 사항 |
 |---|---|
+| OS | Ubuntu 24.04 |
 | Python | 3.12.3 |
 | GPU VRAM | **24GB 이상 권장** (Gemma 4bit 양자화 로드 + LoRA 학습 기준) |
 | CUDA | 12.8 이상 (드라이버가 지원하는 최대 버전이 12.8 이상이면 하위 호환으로 정상 동작) |
-| PyTorch CUDA 빌드 | cu128 (아래 "1. 패키지 설치" 참고) |
 
 VRAM이 24GB보다 적으면 4bit 양자화를 쓰더라도 결과 1(추론)·결과 3(SFT) 섹션에서
 메모리 부족(OOM) 오류가 날 수 있습니다. 이 경우:
-- `Cell 2`(패키지 설치)는 그대로 두고, `Cell 8`/`Cell 17`의 `model_id`를
-  더 작은 모델로 바꾸거나
+- 노트북 `Cell 8`/`Cell 17`의 `model_id`를 더 작은 모델로 바꾸거나
 - 결과 2(GPT), 결과 4(Kiwi)만 실행하는 것으로 범위를 좁히세요 (GPU 자체가 불필요).
 
 자신의 CUDA 버전은 아래 명령으로 확인할 수 있습니다.
@@ -43,57 +42,21 @@ nvidia-smi
 ```
 
 출력 우측 상단의 `CUDA Version`이 드라이버가 지원하는 최대 버전입니다.
-이 값이 PyTorch 빌드 버전(아래 설치 명령의 `cu128`) 이상이면 하위 호환으로 정상 동작합니다.
+이 값이 PyTorch 빌드 버전(노트북 `Cell 0-a`의 `cu128`) 이상이면 하위 호환으로 정상 동작합니다.
 
 > GPU가 없거나 다른 GPU를 쓰는 환경이어도 **결과 2(GPT)와 결과 4(Kiwi)는 CPU만으로 실행 가능**합니다.
 > 이 경우 아래 "GPU 없이 실행하는 경우" 섹션을 참고하세요.
 
 ## 1. 패키지 설치
 
-아래 버전은 실제 실험 환경(`requirements.txt` 기준)에서 사용한 버전을 그대로 명시한 것입니다.
+패키지 설치는 별도 명령 없이, 노트북의 `Cell 0-a`(패키지 설치)를 실행하면 자동으로 진행됩니다.
+설치되는 패키지 목록·버전은 해당 셀 안에 그대로 명시돼 있습니다
+(torch/transformers/peft/trl/bitsandbytes/kiwipiepy/openai 등).
 
-### PyTorch (CUDA 12.8 빌드)
-PyPI 기본 인덱스에는 `+cu128` 빌드가 없으므로 PyTorch 전용 인덱스에서 설치해야 합니다.
+다른 CUDA 버전 환경이라면 `Cell 0-a`의 torch 설치 줄만 본인 환경에 맞게 수정하면 됩니다.
+GPU 없이 결과 2(GPT)·결과 4(Kiwi)만 실행할 계획이면, torch/Gemma 관련 설치 줄은 건너뛰어도 됩니다.
 
-```bash
-pip install torch==2.10.0+cu128 torchaudio==2.11.0+cu128 torchvision==0.25.0+cu128 \
-    --index-url https://download.pytorch.org/whl/cu128
-```
-
-### Gemma 추론/SFT용 (결과 1, 3)
-```bash
-pip install transformers==5.5.4 peft==0.19.1 trl==1.2.0 bitsandbytes==0.49.2 \
-    accelerate==1.13.0 datasets==4.8.4
-```
-
-### Kiwi 형태소 분석기 (결과 4)
-```bash
-pip install kiwipiepy==0.23.1 kiwipiepy_model==0.23.0
-```
-
-### GPT API (결과 2)
-```bash
-pip install openai==2.36.0 python-dotenv==1.2.2
-```
-
-### 공통 데이터 처리·집계
-```bash
-pip install pandas==3.0.2 numpy==2.4.3 tqdm==4.67.3 openpyxl==3.1.5
-```
-
-### 설치 확인
-아래를 실행해 torch가 의도한 CUDA 빌드로 설치됐는지, GPU를 정상 인식하는지 확인하세요.
-
-```python
-import torch
-print(f"torch 버전:       {torch.__version__}")
-print(f"CUDA available:    {torch.cuda.is_available()}")
-if torch.cuda.is_available():
-    print(f"GPU 개수:          {torch.cuda.device_count()}")
-    for i in range(torch.cuda.device_count()):
-        print(f"  [{i}] {torch.cuda.get_device_name(i)}  "
-              f"({torch.cuda.get_device_properties(i).total_memory / 1024**3:.1f} GB)")
-```
+설치 확인은 노트북의 `Cell 0-b`(설치 확인)에서 torch/CUDA/GPU 인식 여부를 바로 보여줍니다.
 
 ## 2. 환경 변수 설정
 
@@ -115,7 +78,7 @@ OPENAI_API_KEY=sk-...
 ## 3. GPU 없이 실행하는 경우
 
 - 결과 2(GPT), 결과 4(Kiwi) 섹션은 GPU 없이도 정상 실행됩니다.
-- 결과 1, 3(Gemma) 섹션을 CPU로 실행하려면 위 PyTorch 설치 명령에서
+- 결과 1, 3(Gemma) 섹션을 CPU로 실행하려면 노트북 `Cell 0-a`의 PyTorch 설치 줄에서
   `--index-url https://download.pytorch.org/whl/cu128` 대신 CPU 전용 빌드를 사용하세요.
   단, `bitsandbytes`의 4bit 양자화는 GPU 전용 기능이므로 CPU 환경에서는 해당 코드가
   동작하지 않거나 매우 느릴 수 있습니다.
@@ -179,8 +142,7 @@ OSError: PermissionError at ... when downloading google/gemma-4-E2B-it. Check ca
 - **`FileNotFoundError` (데이터 파일)**: 노트북의 `Cell 0-0`(경로 진단) 출력을 확인하고,
   위 "폴더 구조" 섹션대로 `data/` 폴더가 배치되어 있는지 확인하세요.
 - **`bitsandbytes` 관련 오류**: GPU/CUDA 버전과 `bitsandbytes` 빌드가 맞지 않을 때 발생합니다.
-  `nvidia-smi`로 CUDA 버전을 다시 확인하고, 위 "1. 패키지 설치" 섹션의 버전을 그대로 맞춰 설치하세요.
-
+  `nvidia-smi`로 CUDA 버전을 다시 확인하고, 노트북 `Cell 0-a`의 버전을 그대로 맞춰 설치하세요.
 
 ## 6. 실행 순서
 
