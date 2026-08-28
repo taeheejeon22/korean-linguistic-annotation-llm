@@ -1,7 +1,23 @@
-# EXP 1 — 형태소 분석 Demo: 환경 설정 안내
+# 한국어 언어 주석의 자동화 가능성 연구
 
-본 논문 실험 1(형태소 분석)의 SFT/추론 파이프라인 재현 예시를 실행하기 위한
-환경 설정 안내입니다. **아래 설정을 모두 마친 뒤 `notebook/` 폴더의 노트북을 실행하세요.**
+이 저장소는 다음 논문의 실험 1을 단순화한 실행 예시를 제공합니다. 실제 논문의 실험 설정과는 일부 차이가 있습니다.
+
+> 전태희. (2026). 한국어 언어 주석의 자동화 가능성 연구: 문법-운율 접면 연구를 위한 로컬 LLM과 SFT 활용. *언어와 정보 사회*, 58, 429–469. https://doi.org/10.29211/soli.2026.58..014
+
+- [KCI 논문 정보](https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003370436)
+- [DOI](https://doi.org/10.29211/soli.2026.58..014)
+
+## 저장소 소개
+
+논문에서는 로컬 LLM인 Gemma 4에 지도 미세 조정(Supervised Fine-Tuning, SFT)을 적용하여 다음 세 가지 한국어 언어 주석 과업의 자동화 가능성을 검토합니다.
+
+1. 형태소 분석
+2. 절의 통사 유형 분류
+3. 연결 어미의 의미 기능 분류
+
+현재 이 저장소는 **실험 1(형태소 분석)의 SFT 및 추론 파이프라인을 실행할 수 있는 데모**를 제공합니다. 공개된 노트북과 표본 데이터는 전체 실험을 그대로 재현하기 위한 패키지가 아니라, 논문에서 사용한 절차를 예시하는 용도입니다.
+
+아래 설정을 모두 마친 뒤 `notebook/` 폴더의 노트북을 실행하세요.
 
 ## 폴더 구조
 
@@ -150,5 +166,37 @@ OSError: PermissionError at ... when downloading google/gemma-4-E2B-it. Check ca
 2. `notebook/exp1_morpheme_4way_demo.ipynb`를 엽니다.
 3. 노트북 상단의 **Cell 0-0(경로 진단)**을 먼저 실행해 데이터 파일을 정상적으로 찾는지 확인합니다.
 4. 이후 노트북에 적힌 순서대로 위에서부터 아래로 실행합니다.
-   - 결과 1(Gemma 추론), 결과 2(GPT), 결과 3(Gemma SFT), 결과 4(Kiwi) 순서이며,
+   - 결과 1(Gemma Vanilla), 결과 2(GPT), 결과 3(Gemma SFT), 결과 4(Kiwi) 순서이며,
      각 섹션은 서로 독립적으로 실행 가능하므로 필요한 섹션만 골라 실행해도 됩니다.
+
+## Citation
+
+이 저장소를 연구에 활용한 경우 다음 논문을 인용해 주세요.
+
+### 국문
+
+```bibtex
+@article{jeon2026koreanannotation,
+  author  = {전태희},
+  title   = {한국어 언어 주석의 자동화 가능성 연구: 문법-운율 접면 연구를 위한 로컬 LLM과 SFT 활용},
+  journal = {언어와 정보 사회},
+  number  = {58},
+  pages   = {429--469},
+  year    = {2026},
+  doi     = {10.29211/soli.2026.58..014}
+}
+```
+
+### English
+
+```bibtex
+@article{jeon2026koreanannotation,
+  author  = {Jeon, Taehee},
+  title   = {Exploring the Feasibility of Automated Korean Linguistic Annotation: Local LLMs and Supervised Fine-Tuning for Grammar-Prosody Interface Research},
+  journal = {Language and Information Society},
+  number  = {58},
+  pages   = {429--469},
+  year    = {2026},
+  doi     = {10.29211/soli.2026.58..014}
+}
+```
