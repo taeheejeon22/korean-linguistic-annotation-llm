@@ -28,10 +28,10 @@
 ├── notebook/
 │   └── exp1_morpheme_4way_demo.ipynb
 └── data/
-    └── nikl_mp_v1_1_repeated_100_sample.json
+    └── nikl_mp_v1_1_repeated_100_samples.json
 ```
 
-노트북은 `../data/nikl_mp_v1_1_repeated_100_sample.json` 상대경로로 데이터를 찾으므로,
+노트북은 `../data/nikl_mp_v1_1_repeated_100_samples.json` 상대경로로 데이터를 찾으므로,
 위 구조를 그대로 유지해야 합니다. 노트북을 다른 위치로 옮기는 경우
 노트북 안의 `NIKL_JSON_PATH` 값을 직접 수정하세요.
 
